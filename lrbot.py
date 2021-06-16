@@ -67,7 +67,7 @@ async def on_message(message):
         return
     if not message.content.startswith(PREFIX):
         return
-    command = message.content[len(PREFIX):]
+    command = message.content[len(PREFIX):].strip()
     if command not in COMMANDS:
         if command not in ALIASES:
             await message.channel.send('Unknown command.')
