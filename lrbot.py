@@ -100,7 +100,7 @@ COMMANDS = {
     ),
 }
 
-# Populate alias list as it's not done by default by Command dataclass.
+# Populate alias list.
 for alias, original in ALIASES.items():
     COMMANDS[original].aliases.append(alias)
 
