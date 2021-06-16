@@ -52,6 +52,9 @@ async def send_help(message):
 async def on_ready():
     """Print out when LRBot is Online"""
     print(f'{client.user} is Online!')
+    activity = discord.Activity(name='lr!help',
+                                type=discord.ActivityType.listening)
+    await client.change_presence(activity=activity)
 
 
 @client.event
@@ -70,7 +73,10 @@ async def on_message(message):
     command = message.content[len(PREFIX):].strip()
     if command not in COMMANDS:
         if command not in ALIASES:
-            await message.channel.send('Unknown command.')
+            await message.channel.send((
+                'Unknown command.\n'
+                f'Use `{PREFIX}help` for a list of available commands.'
+            ))
             return
         command = ALIASES[command]
 
