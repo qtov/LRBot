@@ -10,7 +10,7 @@ Default prefix: `lr!`
 ## Deploying
 Required `Python3.7+`. Tested on `Python3.9`.
 
-1. [OPTIONAL] Create venv and activate it.
+1. [**OPTIONAL**] Create venv and activate it.
     1. `python -m venv venv`
     2. `source venv/bin/activate` (Linux) or `venv\Scripts\activate.bat` (Windows)
 2. Install requirements: `pip install -r requirements.txt`
