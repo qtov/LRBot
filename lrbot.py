@@ -2,7 +2,17 @@ import json
 import httpx
 import discord
 from schemas.command import Command
-from settings import DEBUG, TOKEN, PREFIX, client
+from settings import DEBUG, TOKEN, PREFIX, ACTIVITY_NAME, ACTIVITY_TYPE
+from resources import client, tenor
+try:
+    import uvloop
+except ModuleNotFoundError:
+    print('[*] Running without `uvloop`')
+    uvloop = ...
+
+if uvloop is not ...:
+    uvloop.install()
+
 
 async def send_random_quote(message):
     """
