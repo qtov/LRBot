@@ -5,7 +5,8 @@ Invite link: [https://discord.com/api/oauth2/authorize?client_id=841746412705546
 Default prefix: `lr!`  
 ## Available commands:
 - `help` (`h`) - Outputs all available commands.
-- `random` (`r`|`rand`) - Grabs a random quote from [less-real's API](https://www.less-real.com/api/v1/)
+- `random` (`r`|`rand`) - Grabs a random quote from the API.
+- `character` (`c`|`char`) - Grab a random quote from a character from the API.
 
 ## Deploying
 Required `Python3.7+`. Tested on `Python3.9`.
