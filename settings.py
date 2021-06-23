@@ -9,7 +9,7 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 TENOR_TOKEN = os.getenv('TENOR_TOKEN')
 
-PREFIX = 'l!'
+PREFIX = 'lr!'
 ACTIVITY_NAME = PREFIX + 'help'
 ACTIVITY_TYPE = discord.ActivityType.listening
 
