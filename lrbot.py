@@ -35,6 +35,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+# TODO: move to different file once more Cogs are introduced.
 class Quotes(commands.Cog):
     """Commands that deal with quotes"""
 
@@ -93,6 +94,7 @@ class Quotes(commands.Cog):
 
 def run():
     """Run bot"""
+    bot.add_cog(Quotes())
     bot.run(DISCORD_TOKEN)
 
 
