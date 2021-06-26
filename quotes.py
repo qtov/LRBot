@@ -1,9 +1,9 @@
 import httpx
-import discord
 import json
 from discord.ext import commands
-from settings import API_URL, LR_URL
+from settings import API_URL
 from utils import make_quote_embed
+
 
 class Quotes(commands.Cog):
     """Commands that deal with quotes"""

@@ -1,6 +1,7 @@
 import discord
 from settings import LR_URL
 
+
 def make_quote_embed(quote):
     """
     Make an embed for a quote.

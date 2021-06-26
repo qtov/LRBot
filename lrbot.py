@@ -1,12 +1,10 @@
-import json
-import httpx
 import discord
-from discord.ext import commands
-from discord.ext.commands import has_permissions
+import asyncio
+import signal
 from settings import (
-    PREFIX, DISCORD_TOKEN, ACTIVITY_NAME, ACTIVITY_TYPE, LR_URL, API_URL
+    PREFIX, DISCORD_TOKEN, ACTIVITY_NAME, ACTIVITY_TYPE
 )
-from resources import bot
+from resources import bot, db
 from mod import Mod
 from quotes import Quotes
 try:
@@ -34,11 +32,6 @@ async def on_message(message):
     if message.author == bot.user:
         return
     if not message.content.startswith(PREFIX):
-        if message.author.id == 173054058624450561:
-            if message.content.startswith('!lrbot'):
-                msg = message.content[6:]
-                await message.delete()
-                await message.channel.send(msg)
         return
     await bot.process_commands(message)
 
