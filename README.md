@@ -7,7 +7,7 @@ Default prefix: `lr!`
 - `help` - Outputs all available commands.
 - `random` - Grabs a random quote from the API.
 - `character <character>` - Grab a random quote from a character from the API.
-- `qotd <channel> <role>` - Grab a random quote, using ✅(accept), 🔄(refresh), ❌(cancel) to post to channel and mention role.
+- `qotd <channel> [<role>]` - Grab a random quote, using ✅(accept), 🔄(refresh), ❌(cancel) to post to channel and mention role.
 
 ## Deploying
 Required `Python3.7+`. Tested on `Python3.9`.
