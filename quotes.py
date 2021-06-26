@@ -14,7 +14,6 @@ class Quotes(commands.Cog):
             r = await http_client.get(f'{API_URL}/random')
         r.raise_for_status()
         quote = json.loads(r.text)
-        print(quote)
         embed = make_quote_embed(quote)
         await ctx.send(embed=embed)
 

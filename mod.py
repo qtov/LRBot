@@ -37,7 +37,7 @@ class Mod(commands.Cog):
         return quote
 
     @commands.command()
-    async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role):
+    async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role = None):
         """Put the quote of the day"""
         await db.connect()
         try:
@@ -61,11 +61,10 @@ class Mod(commands.Cog):
         )
         
         if reaction.emoji == '✅':
-            await asyncio.gather(
-                channel.send(embed=embed),
-                channel.send(role.mention),
-                bot_msg.delete(),
-            )
+            await channel.send(embed=embed)
+            if role:
+                await channel.send(role.mention)
+            await bot_msg.delete()
         elif reaction.emoji == '🔄':
             await asyncio.gather(
                 bot_msg.delete(),
