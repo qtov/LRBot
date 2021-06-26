@@ -21,8 +21,7 @@ class Mod(commands.Cog):
     async def get_quote(self, ctx):
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/random')
-        if r.status_code != 200:
-            return
+        r.raise_for_status()
         quote = json.loads(r.text)
         res = await db.fetch_one(
             query=r'SELECT count(id) FROM quotes WHERE id=:id',
@@ -40,19 +39,12 @@ class Mod(commands.Cog):
     @commands.command()
     async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role):
         """Put the quote of the day"""
-        if channel is None:
-            await ctx.send("Please specify channel.")
-            return
         await db.connect()
         try:
             quote = await self.get_quote(ctx)
         finally:
             await db.disconnect()
 
-        # In case quote cannot be gotten.
-        if quote is None:
-            await ctx.send('Cannot get quote, request timed out.')
-            return
         embed = make_quote_embed(quote)
         bot_msg = await ctx.send(embed=embed)
 
@@ -63,9 +55,10 @@ class Mod(commands.Cog):
             bot_msg.add_reaction('❌'),
         )
 
-        def check(reaction, user):
-            return reaction.message.id == bot_msg.id and user == ctx.author
-        reaction, user = await bot.wait_for('reaction_add', check=check)
+        reaction, user = await bot.wait_for(
+            'reaction_add',
+            check=lambda reaction, user: reaction.message.id == bot_msg.id and user == ctx.author,
+        )
         
         if reaction.emoji == '✅':
             await asyncio.gather(
@@ -74,11 +67,20 @@ class Mod(commands.Cog):
                 bot_msg.delete(),
             )
         elif reaction.emoji == '🔄':
-            asyncio.gather(
+            await asyncio.gather(
                 bot_msg.delete(),
                 self.qotd(ctx, channel, role),
             )
         elif reaction.emoji == '❌':
             await bot_msg.delete()
         else:
-            await ctx.send("Didn't plan that, it won't care about your next reaction, lel")
+            await ctx.send((
+                "WELL AREN'T YOU A SMARTYPANTS?!\n"
+                "Because of this the reactions won't trigger anymore, serves you right.\n"
+                "It took me more to write this message than to put a while loop in, I won't do it."
+            ))
+
+    @qotd.error
+    async def qotd_error(self, ctx, error):
+        # TODO: Probably log this shit
+        await ctx.send(str(error).capitalize())

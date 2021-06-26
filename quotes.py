@@ -7,30 +7,36 @@ from utils import make_quote_embed
 
 class Quotes(commands.Cog):
     """Commands that deal with quotes"""
-    @commands.command(aliases=['r', 'rand'])
+    @commands.command(name="random", aliases=['r', 'rand'])
     async def random(self, ctx):
         """Get a random quote"""
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/random')
-        if r.status_code != 200:
-            await ctx.send('Cannot get quote, request timed out.')
-            return
+        r.raise_for_status()
         quote = json.loads(r.text)
         print(quote)
         embed = make_quote_embed(quote)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['c', 'char'])
+    @random.error
+    async def random_error(self, ctx, error):
+        await ctx.send(str(error).capitalize())
+
+    @commands.command(name="character", aliases=['c', 'char'])
     async def character(self, ctx, *, character):
         """Get a random quote of a character"""
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/character/{character}')
-        if r.status_code != 200:
-            await ctx.send('Cannot get quote, request timed out.')
-            return
+        r.raise_for_status()
+
         quote = json.loads(r.text)
         if 'id' not in quote:
             await ctx.send('No quote found.')
             return
+
         embed = make_quote_embed(quote)
         await ctx.send(embed=embed)
+
+    @character.error
+    async def character_error(self, ctx, error):
+        await ctx.send(str(error).capitalize() + '\n`lr!help character` for more help.')
