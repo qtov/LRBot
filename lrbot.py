@@ -1,10 +1,8 @@
 import discord
-import asyncio
-import signal
 from settings import (
     PREFIX, DISCORD_TOKEN, ACTIVITY_NAME, ACTIVITY_TYPE
 )
-from resources import bot, db
+from resources import bot
 from mod import Mod
 from quotes import Quotes
 try:
@@ -36,12 +34,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-def run():
-    """Run bot"""
+if __name__ == '__main__':
     bot.add_cog(Mod())
     bot.add_cog(Quotes())
     bot.run(DISCORD_TOKEN)
-
-
-if __name__ == '__main__':
-    run()

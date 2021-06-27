@@ -33,16 +33,15 @@ class Mod(commands.Cog):
         return quote
 
     async def add_to_db(self, quote):
-        async with db:
-            await db.execute(
-                query=r'INSERT INTO quotes (id) VALUES (:id)',
-                values={'id': quote['id']},
-            )
+        await db.execute(
+            query=r'INSERT INTO quotes (id) VALUES (:id)',
+            values={'id': quote['id']},
+        )
 
     @commands.command()
     async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role = None):
         """
-        Post the quote of the day in <channel>, optionally mentioning <role>
+        Post the quote of the day in <channel>, optionally mentioning [role]
         ✅ - approve the quote and send it to channel + add it to the ignore list.
         🔄 - refresh quote.
         🚫 - refresh quote and add it to the ignore list.
@@ -68,20 +67,25 @@ class Mod(commands.Cog):
         )
         
         if reaction.emoji == '✅':
-            # TODO: use asyncio properly jesus, it's 3AM, I CAN'T!
-            await self.add_to_db(quote)
-            await channel.send(embed=embed)
-            if role:
-                await channel.send(role.mention)
-            await bot_msg.delete()
+            tasks = [
+                self.add_to_db(quote),
+                channel.send(embed=embed),
+                channel.send(role.mention),
+                bot_msg.delete(),
+            ]
+
+            if not role:
+                del tasks[2]
+
+            asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
             await asyncio.gather(
                 bot_msg.delete(),
                 self.qotd(ctx, channel, role),
             )
         elif reaction.emoji == '🚫':
-            await self.add_to_db(quote)
             await asyncio.gather(
+                self.add_to_db(quote),
                 bot_msg.delete(),
                 self.qotd(ctx, channel, role),
             )
@@ -96,5 +100,8 @@ class Mod(commands.Cog):
 
     @qotd.error
     async def qotd_error(self, ctx, error):
-        # TODO: Probably log this shit
-        await ctx.send(str(error).capitalize())
+        if isinstance(error, commands.errors.MissingRequiredArgument):
+            await ctx.send('Please specify channel.\n`lr!help qtod` for more help.')
+        elif isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
+            await ctx.send('There was an error, please try again later.')
+            print(error)

@@ -19,7 +19,9 @@ class Quotes(commands.Cog):
 
     @random.error
     async def random_error(self, ctx, error):
-        await ctx.send(str(error).capitalize())
+        if isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
+            await ctx.send('There was an error, please try again later.')
+            print(error)
 
     @commands.command(name="character", aliases=['c', 'char'])
     async def character(self, ctx, *, character):
@@ -38,4 +40,8 @@ class Quotes(commands.Cog):
 
     @character.error
     async def character_error(self, ctx, error):
-        await ctx.send(str(error).capitalize() + '\n`lr!help character` for more help.')
+        if isinstance(error, commands.errors.MissingRequiredArgument):
+            await ctx.send('Missing character name.\n`lr!help character` for more help.')
+        elif isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
+            await ctx.send('There was an error, please try again later.')
+            print(error)
