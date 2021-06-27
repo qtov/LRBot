@@ -30,20 +30,26 @@ class Mod(commands.Cog):
         # Recurse and find another quote, unlikely, but who knows, lel.
         if res[0]:
             return await self.get_quote(ctx)
-        await db.execute(
-            query=r'INSERT INTO quotes (id) VALUES (:id)',
-            values={'id': quote['id']},
-        )
         return quote
+
+    async def add_to_db(self, quote):
+        async with db:
+            await db.execute(
+                query=r'INSERT INTO quotes (id) VALUES (:id)',
+                values={'id': quote['id']},
+            )
 
     @commands.command()
     async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role = None):
-        """Put the quote of the day"""
-        await db.connect()
-        try:
+        """
+        Post the quote of the day in <channel>, optionally mentioning <role>
+        ✅ - approve the quote and send it to channel.
+        🔄 - refresh quote.
+        🚫 - refresh quote and add it to ignored.
+        ❌ - cancel command.
+        """
+        async with db:
             quote = await self.get_quote(ctx)
-        finally:
-            await db.disconnect()
 
         embed = make_quote_embed(quote)
         bot_msg = await ctx.send(embed=embed)
@@ -52,6 +58,7 @@ class Mod(commands.Cog):
         await asyncio.gather(
             bot_msg.add_reaction('✅'),
             bot_msg.add_reaction('🔄'),
+            bot_msg.add_reaction('🚫'),
             bot_msg.add_reaction('❌'),
         )
 
@@ -61,11 +68,19 @@ class Mod(commands.Cog):
         )
         
         if reaction.emoji == '✅':
+            # TODO: use asyncio properly jesus, it's 3AM, I CAN'T!
+            await self.add_to_db(quote)
             await channel.send(embed=embed)
             if role:
                 await channel.send(role.mention)
             await bot_msg.delete()
         elif reaction.emoji == '🔄':
+            await asyncio.gather(
+                bot_msg.delete(),
+                self.qotd(ctx, channel, role),
+            )
+        elif reaction.emoji == '🚫':
+            await self.add_to_db(quote)
             await asyncio.gather(
                 bot_msg.delete(),
                 self.qotd(ctx, channel, role),
