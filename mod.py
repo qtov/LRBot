@@ -81,7 +81,7 @@ class Mod(commands.Cog):
         try:
             reaction, user = await bot.wait_for(
                 'reaction_add',
-                timeout=6,  # wait 3 minutes for a reaction, otherwise let it be.
+                timeout=60*3,  # wait 3 minutes for a reaction, otherwise let it be.
                 check=check,
             )
         except asyncio.TimeoutError:
