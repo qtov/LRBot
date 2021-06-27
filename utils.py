@@ -1,3 +1,4 @@
+import re
 import discord
 from settings import LR_URL
 
@@ -15,6 +16,8 @@ def make_quote_embed(quote):
         'quote': str, quote
     """
     url = f"{LR_URL}/quotes/{quote['id']}"
+    # Remove <br>'s, there are some, in some quotes.
+    quote = re.sub(r'<\s*br\s*/?>', '\n', quote['quote'])
     embed = discord.Embed(
         title=quote['anime'],
         description=quote['quote'],

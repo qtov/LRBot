@@ -3,7 +3,7 @@ import asyncio
 import httpx
 import json
 from discord.ext import commands
-from settings import API_URL, DEBUG
+from settings import API_URL
 from resources import db, bot
 from utils import make_quote_embed
 
