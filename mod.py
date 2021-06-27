@@ -78,7 +78,7 @@ class Mod(commands.Cog):
             if not role:
                 del tasks[2]
 
-            asyncio.gather(*tasks)
+            await asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
             await asyncio.gather(
                 bot_msg.delete(),
