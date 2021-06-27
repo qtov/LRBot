@@ -43,9 +43,9 @@ class Mod(commands.Cog):
     async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role = None):
         """
         Post the quote of the day in <channel>, optionally mentioning <role>
-        ✅ - approve the quote and send it to channel.
+        ✅ - approve the quote and send it to channel + add it to the ignore list.
         🔄 - refresh quote.
-        🚫 - refresh quote and add it to ignored.
+        🚫 - refresh quote and add it to the ignore list.
         ❌ - cancel command.
         """
         async with db:
