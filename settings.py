@@ -3,9 +3,10 @@ import discord
 from dotenv import load_dotenv
 
 DESCRIPTION = """A bot for grabbing quotes from less-real's API."""
-DEBUG = False
 
 load_dotenv()
+DEBUG = os.getenv('DEBUG', '0')
+DEBUG = bool(int(DEBUG))  # convert to bool.
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 TENOR_TOKEN = os.getenv('TENOR_TOKEN')
 

@@ -3,7 +3,7 @@ import asyncio
 import httpx
 import json
 from discord.ext import commands
-from settings import API_URL
+from settings import API_URL, DEBUG
 from resources import db, bot
 from utils import make_quote_embed
 
@@ -47,8 +47,8 @@ class Mod(commands.Cog):
         🚫 - refresh quote and add it to the ignore list.
         ❌ - cancel command.
         """
-        async with db:
-            quote = await self.get_quote(ctx)
+        # async with db:
+        quote = await self.get_quote(ctx)
 
         embed = make_quote_embed(quote)
         bot_msg = await ctx.send(embed=embed)
@@ -63,7 +63,7 @@ class Mod(commands.Cog):
 
         reaction, user = await bot.wait_for(
             'reaction_add',
-            timeout=60 * 5,  # wait 5 minutes for a reaction, otherwise let it be.
+            timeout=60*3,  # wait 3 minutes for a reaction, otherwise let it be.
             check=lambda reaction, user: reaction.message.id == bot_msg.id and user == ctx.author,
         )
         
@@ -71,12 +71,11 @@ class Mod(commands.Cog):
             tasks = [
                 self.add_to_db(quote),
                 channel.send(embed=embed),
-                channel.send(role.mention),
                 bot_msg.delete(),
             ]
 
-            if not role:
-                del tasks[2]
+            if role:
+                tasks.insert(2, channel.send(role.mention))
 
             await asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
@@ -93,11 +92,11 @@ class Mod(commands.Cog):
         elif reaction.emoji == '❌':
             await bot_msg.delete()
         else:
-            await ctx.send((
-                "WELL AREN'T YOU A SMARTYPANTS?!\n"
-                "Because of this the reactions won't trigger anymore, serves you right.\n"
-                "It took me more to write this message than to put a while loop in, I won't do it."
-            ))
+            # Not await reaction in a loop, I don't want to do it.
+            await asyncio.gather(
+                ctx.send("WELL... AREN'T YOU A SMARTYPANTS?!\n"),
+                bot_msg.delete(),
+            )
 
     @qotd.error
     async def qotd_error(self, ctx, error):
@@ -106,3 +105,13 @@ class Mod(commands.Cog):
         elif isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
             await ctx.send('There was an error, please try again later.')
             print(error)
+
+    @qotd.before_invoke
+    async def qotd_before(self, ctx):
+        DEBUG and print('Connecting to db.')
+        await db.connect()
+
+    @qotd.after_invoke
+    async def qotd_after(self, ctx):
+        DEBUG and print('Disconnecting from db')
+        await db.disconnect()
