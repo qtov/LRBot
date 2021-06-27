@@ -54,17 +54,22 @@ class Mod(commands.Cog):
         bot_msg = await ctx.send(embed=embed)
 
         # add emojis for commands
-        await asyncio.gather(
-            bot_msg.add_reaction('✅'),
-            bot_msg.add_reaction('🔄'),
-            bot_msg.add_reaction('🚫'),
-            bot_msg.add_reaction('❌'),
-        )
+        emojis = ('✅', '🔄', '🚫', '❌')
+        tasks = (bot_msg.add_reaction(emoji) for emoji in emojis)
+        await asyncio.gather(*tasks)
 
+        def check(reaction, user):
+            if (
+                reaction.message.id == bot_msg.id
+                and user == ctx.author
+                and reaction.emoji in emojis
+            ):
+                return True
+            return False
         reaction, user = await bot.wait_for(
             'reaction_add',
             timeout=60*3,  # wait 3 minutes for a reaction, otherwise let it be.
-            check=lambda reaction, user: reaction.message.id == bot_msg.id and user == ctx.author,
+            check=check,
         )
         
         if reaction.emoji == '✅':
@@ -92,7 +97,7 @@ class Mod(commands.Cog):
         elif reaction.emoji == '❌':
             await bot_msg.delete()
         else:
-            # Not await reaction in a loop, I don't want to do it.
+            # Unlikely, but never impossible!
             await asyncio.gather(
                 ctx.send("WELL... AREN'T YOU A SMARTYPANTS?!\n"),
                 bot_msg.delete(),
