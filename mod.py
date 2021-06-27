@@ -129,14 +129,7 @@ class Mod(commands.Cog):
             await ctx.send('There was an error, please try again later.')
             print(error)
 
-    @qotd.before_invoke
-    async def qotd_before(self, ctx):
-        DEBUG and print('Connecting to db.')
-        await db.connect()
-
     @qotd.after_invoke
     async def qotd_after(self, ctx):
-        DEBUG and print('Disconnecting from db')
-        await db.disconnect()
         # Remove message after everything is finished.
         await ctx.message.delete()
