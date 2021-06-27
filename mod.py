@@ -63,6 +63,7 @@ class Mod(commands.Cog):
 
         reaction, user = await bot.wait_for(
             'reaction_add',
+            timeout=60 * 5,  # wait 5 minutes for a reaction, otherwise let it be.
             check=lambda reaction, user: reaction.message.id == bot_msg.id and user == ctx.author,
         )
         
