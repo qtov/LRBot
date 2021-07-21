@@ -93,12 +93,14 @@ class Mod(commands.Cog):
         if reaction.emoji == '✅':
             tasks = [
                 self.add_to_db(quote),
-                channel.send(embed=embed),
                 bot_msg.delete(),
             ]
 
             if role:
-                tasks.insert(2, channel.send(role.mention))
+                send_task = channel.send(role.mention, embed=embed)
+            else:
+                send_task = channel.send(embed=embed)
+            tasks.append(send_task)
 
             await asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
