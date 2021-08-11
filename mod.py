@@ -96,6 +96,9 @@ class Mod(commands.Cog):
                 bot_msg.edit(content='Timed out...', embed=None, delete_after=60),
             )
         
+        # Could make a function for each... And put the reacts in a dict with functions as value...
+        # I could, but ¯\_(ツ)_/¯
+        # Only if I touch it again, lol.
         if reaction.emoji == '✅':
             tasks = [
                 self.add_to_db(quote),
@@ -119,7 +122,7 @@ class Mod(commands.Cog):
         elif reaction.emoji == '❌':
             await bot_msg.delete()
         else:
-            # Unlikely, but not impossible!
+            # Unlikely, and impossible... theoretically!
             await asyncio.gather(
                 ctx.send("WELL... AREN'T YOU A SMARTYPANTS?!\n"),
                 bot_msg.delete(),
