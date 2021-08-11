@@ -10,7 +10,7 @@ def make_quote_embed(quote):
     parameters:
     quote: quote object returned from API.
         'id': int|str, quote id for linkining
-        'author: str, author name
+        'author': str, author name
         'image': str, link to image of character face
         'anime': str, anime name
         'quote': str, quote
