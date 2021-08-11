@@ -8,7 +8,6 @@ load_dotenv()
 DEBUG = os.getenv('DEBUG', '0')
 DEBUG = bool(int(DEBUG))  # convert to bool.
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-TENOR_TOKEN = os.getenv('TENOR_TOKEN')
 
 PREFIX = 'lr!'
 ACTIVITY_NAME = PREFIX + 'help'
