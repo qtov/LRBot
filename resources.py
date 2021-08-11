@@ -1,7 +1,7 @@
 import discord
 from databases import Database
 from discord.ext import commands
-from settings import PREFIX, TENOR_TOKEN, DESCRIPTION
+from settings import PREFIX, DESCRIPTION
 
 intents = discord.Intents.default()
 intents.members = True
