@@ -52,7 +52,8 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
-    async def qotd(self, ctx, channel: discord.TextChannel, role: discord.Role = None):
+    async def qotd(self, ctx, channel: discord.TextChannel,
+                   role: discord.Role = None, message: discord.message.Message = None):
         """
         Post the quote of the day in <channel>, optionally mentioning [role]
         ✅ - approve the quote and send it to channel + add it to the ignore list.
@@ -63,7 +64,12 @@ class Mod(commands.Cog):
         quote = await self.get_quote(ctx)
 
         embed = make_quote_embed(quote)
-        bot_msg = await ctx.send(embed=embed)
+        if message is None:
+            bot_msg = await ctx.send(embed=embed)
+        else:
+            bot_msg = message
+            await bot_msg.clear_reactions()
+            await bot_msg.edit(embed=embed)
 
         # add emojis for commands
         emojis = ('✅', '🔄', '🚫', '❌')
@@ -104,15 +110,11 @@ class Mod(commands.Cog):
 
             await asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
-            await asyncio.gather(
-                bot_msg.delete(),
-                self.qotd(ctx, channel, role),
-            )
+            await self.qotd(ctx, channel, role, bot_msg),
         elif reaction.emoji == '🚫':
             await asyncio.gather(
                 self.add_to_db(quote),
-                bot_msg.delete(),
-                self.qotd(ctx, channel, role),
+                self.qotd(ctx, channel, role, bot_msg),
             )
         elif reaction.emoji == '❌':
             await bot_msg.delete()
