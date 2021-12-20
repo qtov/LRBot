@@ -113,7 +113,7 @@ class Mod(commands.Cog):
 
             await asyncio.gather(*tasks)
         elif reaction.emoji == '🔄':
-            await self.qotd(ctx, channel, role, bot_msg),
+            await self.qotd(ctx, channel, role, bot_msg)
         elif reaction.emoji == '🚫':
             await asyncio.gather(
                 self.add_to_db(quote),
