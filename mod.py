@@ -68,8 +68,10 @@ class Mod(commands.Cog):
             bot_msg = await ctx.send(embed=embed)
         else:
             bot_msg = message
-            await bot_msg.clear_reactions()
-            await bot_msg.edit(embed=embed)
+            await asyncio.gather(
+                bot_msg.clear_reactions(),
+                bot_msg.edit(embed=embed),
+            )
 
         # add emojis for commands
         emojis = ('✅', '🔄', '🚫', '❌')
