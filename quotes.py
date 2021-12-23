@@ -1,5 +1,4 @@
 import httpx
-import json
 from discord.ext import commands
 from settings import API_URL
 from utils import make_quote_embed
@@ -13,7 +12,7 @@ class Quotes(commands.Cog):
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/random')
         r.raise_for_status()
-        quote = json.loads(r.text)
+        quote = r.json()
         embed = make_quote_embed(quote)
         await ctx.send(embed=embed)
 
@@ -30,7 +29,7 @@ class Quotes(commands.Cog):
             r = await http_client.get(f'{API_URL}/character/{character}')
         r.raise_for_status()
 
-        quote = json.loads(r.text)
+        quote = r.json()
         if 'id' not in quote:
             await ctx.send('No quote found.')
             return

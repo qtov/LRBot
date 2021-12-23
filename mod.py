@@ -1,7 +1,6 @@
 import discord
 import asyncio
 import httpx
-import json
 from discord.ext import commands
 from settings import API_URL
 from resources import db, bot
@@ -34,7 +33,7 @@ class Mod(commands.Cog):
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/random')
         r.raise_for_status()
-        quote = json.loads(r.text)
+        quote = r.json()
         res = await db.fetch_one(
             query=r'SELECT count(id) FROM quotes WHERE id=:id',
             values={'id': quote['id']},
