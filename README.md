@@ -2,8 +2,6 @@
 A bot made for [https://less-real.com](https://less-real.com)'s [Discord channel](https://discord.com/invite/3Zd46Uc).  
 Invite link: [https://discord.com/api/oauth2/authorize?client_id=841746412705546280&permissions=223296&scope=bot](https://discord.com/api/oauth2/authorize?client_id=841746412705546280&permissions=223296&scope=bot)
 
-It just works, it's a simple bot, it's not worth the time to make logging or tests ¯\\\_(ツ)\_/¯.
-
 Default prefix: `lr!`  
 ## Available commands:
 - `help` - Outputs all available commands.
