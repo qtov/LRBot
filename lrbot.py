@@ -8,12 +8,9 @@ from mod import Mod
 from quotes import Quotes
 try:
     import uvloop
+    uvloop.install()
 except ModuleNotFoundError:
     print('[*] Running without `uvloop`')
-    uvloop = ...
-
-if uvloop is not ...:
-    uvloop.install()
 
 
 async def make_db_schema():
