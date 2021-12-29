@@ -1,0 +1,7 @@
+pip-tools
+discord.py
+httpx
+databases
+aiosqlite
+uvloop
+python-dotenv
