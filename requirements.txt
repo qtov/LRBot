@@ -15,7 +15,9 @@ anyio==3.4.0
 async-timeout==4.0.2
     # via aiohttp
 attrs==21.3.0
-    # via aiohttp
+    # via
+    #   aiohttp
+    #   pytest
 certifi==2021.10.8
     # via
     #   httpcore
@@ -45,15 +47,31 @@ idna==3.3
     #   anyio
     #   rfc3986
     #   yarl
+iniconfig==1.1.1
+    # via pytest
 multidict==5.2.0
     # via
     #   aiohttp
     #   yarl
 nextcord==2.0.0a4
     # via -r requirements.in
+packaging==21.3
+    # via pytest
 pep517==0.12.0
     # via pip-tools
 pip-tools==6.4.0
+    # via -r requirements.in
+pluggy==1.0.0
+    # via pytest
+py==1.11.0
+    # via pytest
+pyparsing==3.0.6
+    # via packaging
+pytest==6.2.5
+    # via
+    #   -r requirements.in
+    #   pytest-asyncio
+pytest-asyncio==0.16.0
     # via -r requirements.in
 python-dotenv==0.19.2
     # via -r requirements.in
@@ -66,6 +84,8 @@ sniffio==1.2.0
     #   httpx
 sqlalchemy==1.4.29
     # via databases
+toml==0.10.2
+    # via pytest
 tomli==2.0.0
     # via pep517
 typing-extensions==4.0.1

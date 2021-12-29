@@ -5,3 +5,5 @@ databases
 aiosqlite
 uvloop
 python-dotenv
+pytest
+pytest-asyncio
