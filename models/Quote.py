@@ -1,8 +1,9 @@
 import re
 import nextcord
-from settings import LR_URL
 from dataclasses import dataclass
 from nextcord.embeds import Embed
+from typing import Optional
+from settings import LR_URL
 
 
 @dataclass
@@ -13,6 +14,8 @@ class Quote:
     anime: str
     quote: str
     image: str
+    label: Optional[str] = None
+    distance: Optional[int] = None
 
     def __post_init__(self):
         # Remove <br>'s, there are some, in some quotes.

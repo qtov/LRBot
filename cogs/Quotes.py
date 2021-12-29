@@ -1,6 +1,7 @@
 import httpx
 from nextcord.ext import commands
 from nextcord.ext.commands.context import Context
+from typing import Optional
 from settings import API_URL
 from resources import logger
 from models.Quote import Quote
@@ -8,13 +9,16 @@ from models.Quote import Quote
 
 class Quotes(commands.Cog):
     """Commands that deal with quotes"""
-    @commands.command(name="random", aliases=['rand'])
-    async def random(self, ctx: Context) -> None:
-        """Get a random quote from LR and send it."""
+    async def get_random_quote(self) -> Quote:
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/random')
         r.raise_for_status()
-        quote = Quote(**r.json())
+        return Quote(**r.json())
+
+    @commands.command(name="random", aliases=['rand'])
+    async def random(self, ctx: Context) -> None:
+        """Get a random quote from LR and send it."""
+        quote = await self.get_random_quote()
         await ctx.send(embed=quote.embed)
 
     @random.error
@@ -24,20 +28,25 @@ class Quotes(commands.Cog):
             await ctx.send('There was an error, please try again later.')
             logger.info(error)
 
-    @commands.command(name="character", aliases=['char'])
-    async def character(self, ctx: Context, *, character: str) -> None:
-        """Get a random quote of a character and send it."""
+    async def get_character_quote(self, character: str) -> Optional[Quote]:
         async with httpx.AsyncClient() as http_client:
             r = await http_client.get(f'{API_URL}/character/{character}')
         r.raise_for_status()
 
         quote_json = r.json()
         if 'id' not in quote_json:
-            await ctx.send('No quote found.')
-            return
+            return None
 
-        quote = Quote(**quote_json)
-        await ctx.send(embed=quote.embed)
+        return Quote(**quote_json)
+
+    @commands.command(name="character", aliases=['char'])
+    async def character(self, ctx: Context, *, character: str) -> None:
+        """Get a random quote of a character and send it."""
+        quote = await self.get_character_quote(character)
+        if quote is not None:
+            await ctx.send(embed=quote.embed)
+        else:
+            await ctx.send('Found no quotes.')
 
     @character.error
     async def character_error(self, ctx: Context, error: commands.errors.CommandError) -> None:
