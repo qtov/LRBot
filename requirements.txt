@@ -4,13 +4,15 @@
 #
 #    pip-compile
 #
-aiohttp==3.7.4
-    # via discord.py
+aiohttp==3.8.1
+    # via nextcord
+aiosignal==1.2.0
+    # via aiohttp
 aiosqlite==0.17.0
     # via -r requirements.in
 anyio==3.4.0
     # via httpcore
-async-timeout==3.0.1
+async-timeout==4.0.2
     # via aiohttp
 attrs==21.3.0
     # via aiohttp
@@ -18,16 +20,18 @@ certifi==2021.10.8
     # via
     #   httpcore
     #   httpx
-chardet==3.0.4
-    # via aiohttp
 charset-normalizer==2.0.9
-    # via httpx
+    # via
+    #   aiohttp
+    #   httpx
 click==8.0.3
     # via pip-tools
 databases==0.5.3
     # via -r requirements.in
-discord.py==1.7.3
-    # via -r requirements.in
+frozenlist==1.2.0
+    # via
+    #   aiohttp
+    #   aiosignal
 greenlet==1.1.2
     # via sqlalchemy
 h11==0.12.0
@@ -45,6 +49,8 @@ multidict==5.2.0
     # via
     #   aiohttp
     #   yarl
+nextcord==2.0.0a4
+    # via -r requirements.in
 pep517==0.12.0
     # via pip-tools
 pip-tools==6.4.0
@@ -63,9 +69,7 @@ sqlalchemy==1.4.29
 tomli==2.0.0
     # via pep517
 typing-extensions==4.0.1
-    # via
-    #   aiohttp
-    #   aiosqlite
+    # via aiosqlite
 uvloop==0.16.0
     # via -r requirements.in
 wheel==0.37.1

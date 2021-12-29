@@ -1,6 +1,7 @@
 import httpx
-from discord.ext import commands
+from nextcord.ext import commands
 from settings import API_URL
+from resources import logger
 from utils import make_quote_embed
 
 
@@ -18,9 +19,9 @@ class Quotes(commands.Cog):
 
     @random.error
     async def random_error(self, ctx, error):
-        if isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
+        if isinstance(error, commands.errors.CommandInvokeError):
             await ctx.send('There was an error, please try again later.')
-            print(error)
+            logger.info(error)
 
     @commands.command(name="character", aliases=['c', 'char'])
     async def character(self, ctx, *, character):
@@ -41,6 +42,6 @@ class Quotes(commands.Cog):
     async def character_error(self, ctx, error):
         if isinstance(error, commands.errors.MissingRequiredArgument):
             await ctx.send('Missing character name.\n`lr!help character` for more help.')
-        elif isinstance(error, (httpx.HTTPStatusError, httpx.RequestError)):
+        elif isinstance(error, commands.errors.CommandInvokeError):
             await ctx.send('There was an error, please try again later.')
-            print(error)
+            logger.warning(error)

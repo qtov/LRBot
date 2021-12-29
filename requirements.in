@@ -1,5 +1,5 @@
 pip-tools
-discord.py
+nextcord
 httpx
 databases
 aiosqlite

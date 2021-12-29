@@ -1,5 +1,5 @@
 import os
-import discord
+import nextcord
 from dotenv import load_dotenv
 
 DESCRIPTION = """A bot for grabbing quotes from less-real's API."""
@@ -11,7 +11,7 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 PREFIX = 'lr!'
 ACTIVITY_NAME = PREFIX + 'help'
-ACTIVITY_TYPE = discord.ActivityType.listening
+ACTIVITY_TYPE = nextcord.ActivityType.listening
 
 LR_URL = 'https://www.less-real.com'
 API_URL = f'{LR_URL}/api/v1'
