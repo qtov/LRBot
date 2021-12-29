@@ -13,6 +13,7 @@ db = Database('sqlite:///data.db')
 bot = commands.Bot(command_prefix=PREFIX, description=DESCRIPTION,
                    intents=intents)
 
+""" Logging """
 logger = logging.getLogger('lrbot')
 logger.setLevel(logging.INFO)
 log_formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')

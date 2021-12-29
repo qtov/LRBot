@@ -4,8 +4,8 @@ from settings import (
     PREFIX, DISCORD_TOKEN, ACTIVITY_NAME, ACTIVITY_TYPE
 )
 from resources import bot, db, logger
-from mod import Mod
-from quotes import Quotes
+from cogs.Mod import Mod
+from cogs.Quotes import Quotes
 try:
     import uvloop
     uvloop.install()
@@ -28,8 +28,7 @@ async def on_ready():
     """Print out when LRBot is Online"""
     db_task = asyncio.create_task(make_db_schema())
     logger.info(f'{bot.user} is Online!')
-    activity = nextcord.Activity(name=ACTIVITY_NAME,
-                                type=ACTIVITY_TYPE)
+    activity = nextcord.Activity(name=ACTIVITY_NAME, type=ACTIVITY_TYPE)
     await bot.change_presence(activity=activity)
     await db_task
 
