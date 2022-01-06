@@ -4,7 +4,6 @@ import httpx
 from nextcord.ext import commands
 from nextcord.ext.commands.context import Context
 from nextcord.message import Message
-from nextcord.embeds import Embed
 from collections.abc import KeysView
 from settings import API_URL
 from resources import db, bot, logger
@@ -17,7 +16,7 @@ class Mod(commands.Cog):
         """Hook for who can access commands in cog"""
         return ctx.author.guild_permissions.manage_messages
 
-    async def get_quote(self, retries: int = 50) -> Quote:
+    async def get_random_quote(self, retries: int = 50) -> Quote:
         """
         Get quote from API.
         If quote is in quotes db table, retry.
@@ -44,6 +43,16 @@ class Mod(commands.Cog):
             # Quote not in db, break.
             if not res[0]:
                 break
+        return quote
+
+    async def get_quote(self, qid: int) -> Quote:
+        """
+        Get quote from API based on its id. (qid).
+        """
+        async with httpx.AsyncClient() as http_client:
+            r = await http_client.get(f'{API_URL}/quote/{qid}')
+        r.raise_for_status()
+        quote = Quote(**r.json())
         return quote
 
     async def add_to_db(self, quote: Quote) -> None:
@@ -74,6 +83,19 @@ class Mod(commands.Cog):
                            role: nextcord.Role = None) -> None:
         """Wrapper for the qotd method."""
         await self.qotd(ctx, channel, role)
+
+    @commands.command(name='quoteid', aliases=['qid'])
+    async def quoteid(self, ctx: Context, qid: int, channel: nextcord.TextChannel,
+                      role: nextcord.Role = None) -> None:
+        """Send quote to channel based on its id."""
+        quote = await self.get_quote(qid)
+        mention = role.mention if role is not None else None
+        await channel.send(mention, embed=quote.embed)
+
+    @quoteid.after_invoke
+    def quoteid_after(self, ctx: Context) -> None:
+        """Delete mod command."""
+        await ctx.message.delete()
 
     async def qotd(self, ctx, channel: nextcord.TextChannel,
                    role: nextcord.Role = None, message: Message = None) -> None:
@@ -116,7 +138,7 @@ class Mod(commands.Cog):
             '❌': cancel,
         }
         emojis = reactions.keys()
-        quote = await self.get_quote()
+        quote = await self.get_random_quote()
         bot_msg = await self.qotd_put_quote(ctx, quote, emojis, message)
 
         def check(reaction: nextcord.reaction.Reaction, user: nextcord.member.Member):
