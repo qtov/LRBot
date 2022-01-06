@@ -81,7 +81,13 @@ class Mod(commands.Cog):
     @commands.command(name='qotd')
     async def qotd_wrapper(self, ctx: Context, channel: nextcord.TextChannel,
                            role: nextcord.Role = None) -> None:
-        """Wrapper for the qotd method."""
+        """
+        Post the quote of the day in <channel>, optionally mentioning [role]
+        ✅ - approve the quote and send it to channel + add it to the ignore list.
+        🔄 - refresh quote.
+        🚫 - refresh quote and add it to the ignore list.
+        ❌ - cancel command.
+        """
         await self.qotd(ctx, channel, role)
 
     @commands.command(name='quoteid', aliases=['qid'])
@@ -93,7 +99,7 @@ class Mod(commands.Cog):
         await channel.send(mention, embed=quote.embed)
 
     @quoteid.after_invoke
-    def quoteid_after(self, ctx: Context) -> None:
+    async def quoteid_after(self, ctx: Context) -> None:
         """Delete mod command."""
         await ctx.message.delete()
 
